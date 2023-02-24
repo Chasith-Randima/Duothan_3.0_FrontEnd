@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { logIn, isAuth, authenticate } from "../../../actions/auth";
+import { logIn, isAuth, authenticate } from "../../../actions/authAdmin";
 import Router from "next/router";
 import Message from "../../../components/Message";
 import Link from "next/link";

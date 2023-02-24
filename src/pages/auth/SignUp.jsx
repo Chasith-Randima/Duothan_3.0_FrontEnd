@@ -10,6 +10,9 @@ const SignUp = () => {
   const [values, setValues] = useState({
     name: "",
     email: "",
+    address: "",
+    phoneNumber: "",
+    pharmacyLicense: "",
     password: "",
     passwordConfirm: "",
     error: "",
@@ -30,15 +33,33 @@ const SignUp = () => {
     }
   }, []);
 
-  const { name, email, password, passwordConfirm, error, loading, message } =
-    values;
+  const {
+    name,
+    email,
+    password,
+    address,
+    phoneNumber,
+    pharmacyLicense,
+    passwordConfirm,
+    error,
+    loading,
+    message,
+  } = values;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setAlert({ ...alert, loading: true });
     setValues({ ...values, loading: true, error: false });
     // console.log(values);
-    const user = { name, email, password, passwordConfirm };
+    const user = {
+      name,
+      email,
+      password,
+      passwordConfirm,
+      address,
+      phoneNumber,
+      pharmacyLicense,
+    };
     signup(user)
       .then((data) => {
         if (data.status && data.status == "success") {
@@ -47,6 +68,9 @@ const SignUp = () => {
             ...values,
             name: "",
             email: "",
+            address: "",
+            phoneNumber: "",
+            pharmacyLicense: "",
             password: "",
             passwordConfirm: "",
             error: "",
@@ -113,13 +137,37 @@ const SignUp = () => {
           <form action="">
             <div className="space-y-4">
               <div>
-                <label className="text-gray-600 mb-2 block">Full Name</label>
+                <label className="text-gray-600 mb-2 block">
+                  Pharmacy Name
+                </label>
                 <input
                   type="text"
                   value={name}
                   onChange={handleChange("name")}
                   className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
                   placeholder="Enter your email address"
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 mb-2 block">Address</label>
+                <input
+                  type="text"
+                  value={address}
+                  onChange={handleChange("address")}
+                  className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                  placeholder="Enter your address"
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 mb-2 block">
+                  Pharmacy License
+                </label>
+                <input
+                  type="text"
+                  value={pharmacyLicense}
+                  onChange={handleChange("pharmacyLicense")}
+                  className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                  placeholder="Enter your Pharmacy License"
                 />
               </div>
               <div>
@@ -130,6 +178,16 @@ const SignUp = () => {
                   type="text"
                   value={email}
                   onChange={handleChange("email")}
+                  className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                  placeholder="Enter your email address"
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 mb-2 block">Phone Number</label>
+                <input
+                  type="text"
+                  value={phoneNumber}
+                  onChange={handleChange("phoneNumber")}
                   className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
                   placeholder="Enter your email address"
                 />

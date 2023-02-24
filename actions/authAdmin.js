@@ -11,7 +11,7 @@ if (process.env.NEXT_PUBLIC_PRODUCTION == true) {
 
 export const signup = async (user) => {
   console.log(API);
-  let url = `${API}/pharmacy/signup`;
+  let url = `${API}/users/signup`;
   return fetch(url, {
     method: "POST",
     headers: {
@@ -31,7 +31,7 @@ export const signup = async (user) => {
 };
 
 export const logIn = async (user) => {
-  let url = `${API}/pharmacy/login`;
+  let url = `${API}/users/login`;
   return fetch(url, {
     method: "POST",
     headers: {
@@ -51,7 +51,7 @@ export const logIn = async (user) => {
 
 export const logOut = async (next) => {
   removeCookie("token");
-  removeLocalStorage("pharmacy");
+  removeLocalStorage("user");
   next();
   let url = `${API}/users/logout`;
   return fetch(url, {
@@ -104,7 +104,7 @@ export const removeLocalStorage = (key) => {
 export const authenticate = (data, next) => {
   // console.log(data.token, data.user, data);
   setCookie("token", data.token);
-  setLocalStorage("pharmacy", data.pharmacy);
+  setLocalStorage("user", data.user);
   next();
 };
 
@@ -113,12 +113,12 @@ export const isAuth = () => {
     const cookieChecked = getCookie("token");
     if (cookieChecked) {
       if (
-        localStorage.getItem("pharmacy") &&
-        localStorage.getItem("pharmacy") != "undefined"
+        localStorage.getItem("user") &&
+        localStorage.getItem("user") != "undefined"
       ) {
-        // console.log(typeof localStorage.getItem("pharmacy"));
-        return JSON.parse(localStorage.getItem("pharmacy"));
-        // return JSON.parse(localStorage.getItem("pharmacy"));
+        // console.log(typeof localStorage.getItem("user"));
+        return JSON.parse(localStorage.getItem("user"));
+        // return JSON.parse(localStorage.getItem("user"));
       } else {
         return false;
       }

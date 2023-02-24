@@ -1,18 +1,20 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { logIn, isAuth, authenticate } from "../../../actions/auth";
+// import Layout from "../../components/Layout";
 import Router from "next/router";
-import Message from "../../../components/Message";
+import { isAuth, signup } from "../../../actions/authAdmin";
 import Link from "next/link";
+import Message from "../../../components/Message";
 
-const LogIn = () => {
+const SignUp = () => {
   const [values, setValues] = useState({
+    name: "",
     email: "",
     password: "",
+    passwordConfirm: "",
     error: "",
     loading: false,
     message: "",
-    showForm: true,
   });
 
   const [alert, setAlert] = useState({
@@ -28,19 +30,34 @@ const LogIn = () => {
     }
   }, []);
 
-  const { email, password, error, loading, message, showForm } = values;
+  const { name, email, password, passwordConfirm, error, loading, message } =
+    values;
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setAlert({ ...alert, loading: true });
     setValues({ ...values, loading: true, error: false });
-    const user = { email, password };
-
-    await logIn(user)
+    // console.log(values);
+    const user = {
+      name,
+      email,
+      password,
+      passwordConfirm,
+    };
+    signup(user)
       .then((data) => {
-        // console.log(data);
         if (data.status && data.status == "success") {
-          data.data.token = data.token;
+          // console.log(data);
+          setValues({
+            ...values,
+            name: "",
+            email: "",
+            password: "",
+            passwordConfirm: "",
+            error: "",
+            loading: false,
+            message: data.statusText,
+          });
           setAlert({
             ...alert,
             loading: false,
@@ -52,14 +69,7 @@ const LogIn = () => {
             setAlert({ ...alert, success: false, message: "" });
           }, 1500);
 
-          // console.log(data);
-          // console.log(data.error);
-          authenticate(data.data, () => {
-            if (isAuth()) {
-              Router.push(`/`);
-            }
-          });
-          Router.push("/");
+          Router.push(`/auth/LogIn`);
         } else {
           setAlert({
             ...alert,
@@ -83,22 +93,40 @@ const LogIn = () => {
   };
 
   const handleChange = (name) => (e) => {
-    e.preventDefault();
     setValues({ ...values, error: false, [name]: e.target.value });
   };
+
+  let showLoading = () =>
+    loading ? <div className="alert alert-info">Loading...</div> : "";
+  let showError = () =>
+    error ? <div className="alert alert-danger">{error}</div> : "";
+  let showMessage = () =>
+    message ? <div className="alert alert-info">{message}</div> : "";
   return (
     <>
+      {/* <Layout> */}
       {/* <!-- Login --> */}
 
       <div className="container py-16">
-        <div className="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden">
-          <h2 className="text-2xl uppercase font-medium mb-1">Login</h2>
-          <p className="text-gray-600 mb-6 text-sm">
-            Login if you are a returning customer
-          </p>
+        {/* {showError()}
+        {showLoading()}
+        {showMessage()} */}
 
+        <div className="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden">
+          <h2 className="text-2xl uppercase font-medium mb-1">SignUp</h2>
+          <p className="text-gray-600 mb-6 text-sm">Signup to our website</p>
           <form action="">
             <div className="space-y-4">
+              <div>
+                <label className="text-gray-600 mb-2 block">Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={handleChange("name")}
+                  className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                  placeholder="Enter your email address"
+                />
+              </div>
               <div>
                 <label className="text-gray-600 mb-2 block">
                   Email Address
@@ -111,12 +139,25 @@ const LogIn = () => {
                   placeholder="Enter your email address"
                 />
               </div>
+
               <div>
                 <label className="text-gray-600 mb-2 block">Password</label>
                 <input
                   type="text"
                   value={password}
                   onChange={handleChange("password")}
+                  className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                  placeholder="Enter your Password"
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 mb-2 block">
+                  Password Confirm
+                </label>
+                <input
+                  type="text"
+                  value={passwordConfirm}
+                  onChange={handleChange("passwordConfirm")}
                   className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
                   placeholder="Enter your Password"
                 />
@@ -135,21 +176,22 @@ const LogIn = () => {
                   className="block w-full py-2 text-center text-black bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
                   onClick={handleSubmit}
                 >
-                  login
+                  SignUp
                 </button>
               </div>
             </div>
           </form>
           <p className="mt-4 text-gray-600 text-center">
-            Dont have an account?
-            <Link href={`/user/signUp`} className="text-primary">
-              Register Now
+            Already have an account?
+            <Link href={`/user/login`} className="text-primary">
+              LogIn Now
             </Link>
           </p>
         </div>
       </div>
+      {/* </Layout> */}
     </>
   );
 };
 
-export default LogIn;
+export default SignUp;

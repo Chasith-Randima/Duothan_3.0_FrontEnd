@@ -1,11 +1,15 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "@next/font/google";
-import styles from "@/styles/Home.module.css";
+import React from "react";
+import { allDrugs } from "../../actions/drugs";
+import { withRouter } from "next/router";
+import SearchSection from "components/SearchSection";
+import Sidebar from "components/Sidebar";
+// import Model from "../../components/Model";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+const Home = ({ drugs_list, results, totalCount }) => {
   return (
     <>
       <Head>
@@ -14,7 +18,93 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="text-blue-600">
+      <section className="mx-64 flex  items-center justify-between  col-span-12">
+        <SearchSection />
+        {/* <div className="">All</div>
+          <div className="w-max">
+            <input
+              type="text"
+              value={"search"}
+              // onChange={handleChange("search")}
+              className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+              placeholder="Search Drugs"
+            />
+          </div>
+          <div>Search Icon</div> */}
+      </section>
+      <main className="grid grid-cols-12 w-full">
+        <Sidebar />
+        <section className="mx-64 flex flex-col items-center col-span-12">
+          {drugs_list.map((drugs, key) => {
+            return (
+              <>
+                <div class="w-full m-2 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                  <a href="#">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                      {drugs.name}
+                    </h5>
+                  </a>
+                  {/* <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                    Here are the biggest enterprise technology acquisitions of
+                    2021 so far, in reverse chronological order.
+                  </p> */}
+                  <a
+                    href="#"
+                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Read more
+                    <svg
+                      aria-hidden="true"
+                      class="w-4 h-4 ml-2 -mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </a>
+                </div>
+              </>
+            );
+          })}
+        </section>
+
+        {/* <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+          <a href="#">
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Noteworthy technology acquisitions 2021
+            </h5>
+          </a>
+          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+            Here are the biggest enterprise technology acquisitions of 2021 so
+            far, in reverse chronological order.
+          </p>
+          <a
+            href="#"
+            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Read more
+            <svg
+              aria-hidden="true"
+              class="w-4 h-4 ml-2 -mr-1"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </a>
+        </div> */}
+      </main>
+      {/* <main className="text-blue-600">
         <div className={styles.description}>
           <p>
             Get started by editing&nbsp;
@@ -117,7 +207,38 @@ export default function Home() {
             </p>
           </a>
         </div>
-      </main>
+      </main> */}
     </>
   );
-}
+};
+
+Home.getInitialProps = async () => {
+  let page = 1;
+  let limit = 9;
+  let brandname;
+  let location;
+  let priceMin;
+  let priceMax;
+  let sort;
+
+  return await allDrugs(
+    limit,
+    page,
+    brandname,
+    location,
+    priceMin,
+    priceMax,
+    sort
+  ).then((data) => {
+    console.log(data.data.doc);
+
+    return {
+      drugs_list: data.data.doc,
+      results: data.data.results,
+      totalCount: data.data.totalCount,
+    };
+    // return {};
+  });
+};
+
+export default withRouter(Home);
